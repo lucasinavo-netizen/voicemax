@@ -1,4 +1,4 @@
-# Podcast Maker - 一站式 Podcast 製作工具
+# VoiceMax - 一站式 Podcast 製作工具
 
 一個自動化的 Podcast 製作工具，能夠將 YouTube 影片自動轉換為文字內容，包括完整逐字稿、精華摘要和 Podcast 腳本。
 
@@ -28,7 +28,7 @@
 1. **克隆專案**
    ```bash
    git clone <repository-url>
-   cd podcast-maker-backup-20251201-224457
+   cd voicemax
    ```
 
 2. **安裝依賴**
@@ -115,7 +115,7 @@
 ## 專案結構
 
 ```
-podcast-maker/
+voicemax/
 ├── client/              # 前端 React 應用
 │   ├── src/
 │   │   ├── components/  # React 組件

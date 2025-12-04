@@ -22,7 +22,7 @@
 2. **建立 R2 Bucket**
    - 在 Cloudflare Dashboard 中，前往 **R2**
    - 點擊 **Create bucket**
-   - 輸入 Bucket 名稱（例如 `podcast-maker-storage`）
+   - 輸入 Bucket 名稱（例如 `voicemax-storage`）
    - 選擇位置（建議選擇離您最近的）
    - 點擊 **Create bucket**
 
@@ -30,7 +30,7 @@
    - 在 R2 頁面，點擊 **Manage R2 API Tokens**
    - 點擊 **Create API Token**
    - 設定：
-     - **Token name**：`podcast-maker-r2-token`
+     - **Token name**：`voicemax-r2-token`
      - **Permissions**：選擇 **Object Read & Write**
      - **TTL**：留空（永久有效）或設定到期時間
    - 點擊 **Create API Token**
@@ -78,7 +78,7 @@
    - 登入後，前往 **B2 Cloud Storage**
    - 點擊 **Create a Bucket**
    - 設定：
-     - **Bucket Name**：例如 `podcast-maker-storage`
+     - **Bucket Name**：例如 `voicemax-storage`
      - **Files in Bucket are**：選擇 **Public**（如果需要公開存取）
    - 點擊 **Create a Bucket**
 
@@ -86,7 +86,7 @@
    - 前往 **App Keys**
    - 點擊 **Add a New Application Key**
    - 設定：
-     - **Key Name**：`podcast-maker-key`
+     - **Key Name**：`voicemax-key`
      - **Allow access to Bucket(s)**：選擇您剛建立的 bucket
      - **Allow List All Bucket Names**：可選
      - **Allow Read Files**：勾選

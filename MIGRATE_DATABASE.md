@@ -17,7 +17,7 @@ railway login
 ```bash
 railway link
 ```
-選擇你的 Railway 專案（podcast-maker）。
+選擇你的 Railway 專案（voicemax）。
 
 ### 步驟 4：執行資料庫遷移
 ```bash
@@ -32,7 +32,7 @@ railway run pnpm db:push
 ## 方法 2：在 Railway Dashboard 執行
 
 ### 步驟 1：進入 Shell
-1. 在 Railway Dashboard 中，點擊 `podcast-maker` 服務
+1. 在 Railway Dashboard 中，點擊 `voicemax` 服務
 2. 點擊 **"Deployments"** 標籤
 3. 點擊最新的部署
 4. 點擊 **"Shell"** 按鈕（如果有的話）

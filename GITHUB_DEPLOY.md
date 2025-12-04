@@ -24,7 +24,7 @@ git commit -m "初始提交：Podcast Maker 專案，支援純 Node.js 環境"
 2. **登入**你的帳號
 3. **點擊右上角的 "+"** → 選擇 **"New repository"**
 4. **填寫倉庫資訊**：
-   - Repository name: `podcast-maker`（或你喜歡的名稱）
+   - Repository name: `voicemax`（或你喜歡的名稱）
    - Description: `Podcast 一站式製作工具`
    - 選擇 **Public** 或 **Private**
    - **不要**勾選 "Initialize this repository with a README"（因為我們已經有程式碼了）
@@ -36,10 +36,10 @@ GitHub 會顯示連接指令，在終端機執行：
 
 ```bash
 # 添加遠端倉庫（將 YOUR_USERNAME 替換為你的 GitHub 用戶名）
-git remote add origin https://github.com/YOUR_USERNAME/podcast-maker.git
+git remote add origin https://github.com/YOUR_USERNAME/voicemax.git
 
 # 或者使用 SSH（如果你有設定 SSH key）
-# git remote add origin git@github.com:YOUR_USERNAME/podcast-maker.git
+# git remote add origin git@github.com:YOUR_USERNAME/voicemax.git
 
 # 推送程式碼到 GitHub
 git branch -M main
@@ -81,7 +81,7 @@ cat ~/.ssh/id_ed25519.pub
 git remote remove origin
 
 # 重新添加
-git remote add origin https://github.com/YOUR_USERNAME/podcast-maker.git
+git remote add origin https://github.com/YOUR_USERNAME/voicemax.git
 ```
 
 ### 如果檔案太大無法推送

@@ -12,7 +12,7 @@ Manus Forge API 返回 404 錯誤，表示端點 `v1/storage/upload` 可能不�
 2. 搜尋並進入 **S3**
 3. 點擊 **Create bucket**
 4. 設定：
-   - **Bucket name**：例如 `podcast-maker-storage`（必須全球唯一）
+   - **Bucket name**：例如 `voicemax-storage`（必須全球唯一）
    - **Region**：選擇 `us-east-1` 或離您最近的區域
    - **Block Public Access**：取消勾選（允許公開讀取）
    - 其他保持預設
@@ -22,7 +22,7 @@ Manus Forge API 返回 404 錯誤，表示端點 `v1/storage/upload` 可能不�
 
 1. 在 AWS Console 搜尋 **IAM**
 2. 點擊 **Users** → **Create user**
-3. 使用者名稱：`podcast-maker-s3-user`
+3. 使用者名稱：`voicemax-s3-user`
 4. 選擇 **Provide user access to the AWS Management Console** → **Next**
 5. 選擇 **Attach policies directly**
 6. 搜尋並勾選 **AmazonS3FullAccess**

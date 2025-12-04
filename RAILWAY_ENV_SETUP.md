@@ -153,7 +153,7 @@ KLING_AI_SECRET_KEY=你的-kling-secret-key
 
 ### 前端顯示設定（選用）
 ```
-VITE_APP_TITLE=Podcast Maker
+VITE_APP_TITLE=VoiceMax
 VITE_APP_LOGO=https://example.com/logo.png
 VITE_ANALYTICS_ENDPOINT=https://analytics.example.com
 VITE_ANALYTICS_WEBSITE_ID=your-website-id

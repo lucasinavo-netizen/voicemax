@@ -13,7 +13,7 @@
 1. 登入 Railway Dashboard
 2. 點擊 **"New Project"**
 3. 選擇 **"Deploy from GitHub repo"**
-4. 選擇你的 `podcast-maker` repository
+4. 選擇你的 `voicemax` repository
 5. Railway 會自動偵測 `Dockerfile` 並開始建置
 
 ### 2. 設定資料庫
@@ -104,7 +104,7 @@ LISTENHUB_API_KEY=your-listenhub-api-key
 #### 🟢 前端環境變數（選用）
 
 ```bash
-VITE_APP_TITLE=Podcast Maker
+VITE_APP_TITLE=VoiceMax
 VITE_APP_LOGO=https://example.com/logo.png
 VITE_ANALYTICS_ENDPOINT=https://analytics.example.com
 VITE_ANALYTICS_WEBSITE_ID=your-website-id

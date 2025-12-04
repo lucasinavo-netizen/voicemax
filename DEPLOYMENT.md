@@ -100,14 +100,14 @@ KLING_AI_SECRET_KEY=your-kling-secret-key
 
 ```bash
 # 建置映像
-docker build -t podcast-maker .
+docker build -t voicemax .
 
 # 執行容器
 docker run -p 3000:3000 \
   -e DATABASE_URL="your-database-url" \
   -e JWT_SECRET="your-jwt-secret" \
   # ... 其他環境變數
-  podcast-maker
+  voicemax
 
 # 訪問應用
 open http://localhost:3000

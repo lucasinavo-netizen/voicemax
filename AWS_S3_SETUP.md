@@ -16,7 +16,7 @@
 2. 前往 **S3** 服務
 3. 點擊 **Create bucket**
 4. 設定：
-   - **Bucket name**：例如 `podcast-maker-storage`
+   - **Bucket name**：例如 `voicemax-storage`
    - **Region**：選擇離您最近的區域（例如 `us-east-1`）
    - **Block Public Access**：根據需求設定（如果需要公開存取，需要關閉）
    - 其他設定保持預設即可
@@ -25,7 +25,7 @@
 
 1. 前往 **IAM** 服務
 2. 點擊 **Users** → **Create user**
-3. 設定使用者名稱（例如 `podcast-maker-s3-user`）
+3. 設定使用者名稱（例如 `voicemax-s3-user`）
 4. 選擇 **Programmatic access**
 5. 附加政策：選擇 **AmazonS3FullAccess**（或建立自訂政策，僅允許特定 bucket）
 6. 建立使用者後，**立即複製 Access Key ID 和 Secret Access Key**（只會顯示一次）

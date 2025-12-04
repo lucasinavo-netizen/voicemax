@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: podcast-maker
+    name: voicemax
     env: docker
     dockerfilePath: ./Dockerfile
     plan: starter

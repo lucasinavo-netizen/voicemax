@@ -9,7 +9,7 @@
 1. 前往 [GitHub](https://github.com) 並登入
 2. 點擊右上角的 **"+"** → **"New repository"**
 3. 填寫 Repository 資訊：
-   - **Repository name**: `podcast-maker`（或您想要的名稱）
+   - **Repository name**: `voicemax`（或您想要的名稱）
    - **Description**: Podcast 一站式製作工具
    - **Visibility**: 選擇 **Public** 或 **Private**
    - **不要**勾選 "Initialize this repository with a README"（因為我們已經有文件）
@@ -24,7 +24,7 @@
 cd /Users/idea3c/Downloads/podcast-maker-backup-20251201-224457
 
 # 提交所有文件
-git commit -m "Initial commit: Podcast Maker 專案準備部署到 Railway"
+git commit -m "Initial commit: VoiceMax 專案準備部署到 Railway"
 
 # 添加 GitHub remote（將 YOUR_USERNAME 和 REPO_NAME 替換為您的實際值）
 git remote add origin https://github.com/YOUR_USERNAME/REPO_NAME.git
