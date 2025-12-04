@@ -51,17 +51,21 @@ export function serveStatic(app: Express) {
   // 生產環境的建置輸出目錄（根據 vite.config.ts 的 build.outDir）
   // 使用多種方式嘗試找到正確的路徑
   const cwd = process.cwd();
-  const possiblePaths = [
+  const possiblePaths: string[] = [
     path.resolve(cwd, "dist", "public"),           // 標準路徑
     path.resolve(cwd, "..", "dist", "public"),     // 如果 cwd 在子目錄
-    path.resolve(__dirname, "..", "..", "dist", "public"), // 使用 __dirname（如果可用）
     "/app/dist/public",                            // Docker 容器中的絕對路徑
   ];
+  
+  // 只在 __dirname 可用時添加（ES modules 中可能不可用）
+  if (typeof __dirname !== 'undefined') {
+    possiblePaths.push(path.resolve(__dirname, "..", "..", "dist", "public"));
+  }
   
   let distPath: string | null = null;
   
   console.log(`[Static] Current working directory: ${cwd}`);
-  console.log(`[Static] __dirname: ${typeof __dirname !== 'undefined' ? __dirname : 'not available'}`);
+  console.log(`[Static] __dirname: ${typeof __dirname !== 'undefined' ? __dirname : 'not available (ES modules)'}`);
   
   // 嘗試找到存在的路徑
   for (const possiblePath of possiblePaths) {
