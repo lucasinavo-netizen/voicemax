@@ -28,6 +28,30 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  // 先創建 Express 應用和伺服器，立即設置健康檢查端點
+  // 這樣健康檢查可以在其他初始化完成前就可用
+  const app = express();
+  const server = createServer(app);
+  
+  // Health check endpoint (must be FIRST, before any other middleware)
+  // This ensures health checks work even if other parts fail
+  app.get("/health", (_req, res) => {
+    res.status(200).json({ 
+      status: "ok", 
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime()
+    });
+  });
+  
+  // Root path also responds for health checks
+  app.get("/", (_req, res) => {
+    res.status(200).json({ 
+      status: "ok", 
+      message: "VoiceMax API is running",
+      timestamp: new Date().toISOString()
+    });
+  });
+
   // 驗證環境變數（在啟動前檢查）
   // 注意：在 Railway 部署時，如果環境變數未設定，只顯示警告，不阻止啟動
   // 這樣可以讓健康檢查通過，然後在 Railway 日誌中看到缺少哪些變數
@@ -65,32 +89,28 @@ async function startServer() {
   console.log("[Startup] GOOGLE_GEMINI_API_KEY:", process.env.GOOGLE_GEMINI_API_KEY ? "Set (hidden)" : "NOT SET");
   console.log("[Startup] NODE_ENV:", process.env.NODE_ENV);
 
-  // 在啟動伺服器前執行資料庫遷移
+  // 在背景執行資料庫遷移，不阻塞伺服器啟動
   // 注意：遷移失敗不應該阻止應用啟動，讓 Railway 健康檢查可以通過
-  try {
-    const { runMigrations } = await import("./migrate");
-    await runMigrations();
-    console.log("[Startup] ✅ 資料庫遷移完成");
-  } catch (error) {
-    console.error("[Startup] ⚠️  資料庫遷移失敗:");
-    console.error(error instanceof Error ? error.message : error);
-    console.error("[Startup] ⚠️  應用程式將繼續啟動，但資料庫功能可能無法使用");
-    console.error("[Startup] ⚠️  請檢查 DATABASE_URL 是否正確，或手動執行遷移");
-  }
-
-  const app = express();
-  const server = createServer(app);
-  
-  // Health check endpoint (must be before other middleware)
-  app.get("/health", (_req, res) => {
-    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
-  });
+  (async () => {
+    try {
+      const { runMigrations } = await import("./migrate");
+      await runMigrations();
+      console.log("[Startup] ✅ 資料庫遷移完成");
+    } catch (error) {
+      console.error("[Startup] ⚠️  資料庫遷移失敗:");
+      console.error(error instanceof Error ? error.message : error);
+      console.error("[Startup] ⚠️  應用程式將繼續運行，但資料庫功能可能無法使用");
+      console.error("[Startup] ⚠️  請檢查 DATABASE_URL 是否正確，或手動執行遷移");
+    }
+  })();
   
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  
   // Google OAuth routes
   registerOAuthRoutes(app);
+  
   // tRPC API
   app.use(
     "/api/trpc",
@@ -99,6 +119,7 @@ async function startServer() {
       createContext,
     })
   );
+  
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
@@ -106,18 +127,15 @@ async function startServer() {
     serveStatic(app);
   }
 
+  // Get port from environment (Railway sets this automatically)
   const preferredPort = parseInt(process.env.PORT || "3000");
   const port = await findAvailablePort(preferredPort);
 
   if (port !== preferredPort) {
-    console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
+    console.log(`[Server] Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
-  server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
-  });
-
-  // 優雅關閉處理
+  // 優雅關閉處理（在啟動前設置）
   const gracefulShutdown = async (signal: string) => {
     console.log(`[Server] Received ${signal}, starting graceful shutdown...`);
     
@@ -141,6 +159,27 @@ async function startServer() {
 
   process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
   process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+
+  // Start server and return promise
+  return new Promise<void>((resolve, reject) => {
+    server.listen(port, "0.0.0.0", () => {
+      console.log(`[Server] ✅ Server running on http://0.0.0.0:${port}/`);
+      console.log(`[Server] ✅ Health check available at http://0.0.0.0:${port}/health`);
+      resolve();
+    });
+    
+    server.on("error", (error) => {
+      console.error(`[Server] ❌ Server failed to start:`, error);
+      reject(error);
+    });
+  });
 }
 
-startServer().catch(console.error);
+startServer()
+  .then(() => {
+    console.log("[Startup] ✅ Server startup completed successfully");
+  })
+  .catch((error) => {
+    console.error("[Startup] ❌ Server startup failed:", error);
+    process.exit(1);
+  });
