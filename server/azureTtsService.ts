@@ -3,7 +3,6 @@
  * 用於生成中文男女對話 Podcast
  */
 
-import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import { uploadFile } from "./storage";
 import { nanoid } from "nanoid";
 import path from "path";
@@ -14,6 +13,20 @@ import ffmpegInstaller from "@ffmpeg-installer/ffmpeg";
 
 const execFileAsync = promisify(execFile);
 const FFMPEG_PATH = ffmpegInstaller.path;
+
+// 延遲導入 Azure Speech SDK，避免在模組載入時失敗
+let sdk: typeof import("microsoft-cognitiveservices-speech-sdk") | null = null;
+
+async function getAzureSdk() {
+  if (!sdk) {
+    try {
+      sdk = await import("microsoft-cognitiveservices-speech-sdk");
+    } catch (error) {
+      throw new Error(`Failed to import Azure Speech SDK: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  return sdk;
+}
 
 const AZURE_SPEECH_KEY = process.env.AZURE_SPEECH_KEY;
 const AZURE_SPEECH_REGION = process.env.AZURE_SPEECH_REGION || "eastus";
@@ -125,14 +138,15 @@ async function synthesizeSpeech(
     throw new Error("Azure Speech API Key not configured");
   }
 
-  const speechConfig = sdk.SpeechConfig.fromSubscription(
+  const azureSdk = await getAzureSdk();
+  const speechConfig = azureSdk.SpeechConfig.fromSubscription(
     AZURE_SPEECH_KEY,
     AZURE_SPEECH_REGION
   );
   speechConfig.speechSynthesisVoiceName = voiceName;
   speechConfig.speechSynthesisLanguage = locale;
 
-  const synthesizer = new sdk.SpeechSynthesizer(speechConfig, null);
+  const synthesizer = new azureSdk.SpeechSynthesizer(speechConfig, null);
 
   return new Promise((resolve, reject) => {
     synthesizer.speakTextAsync(

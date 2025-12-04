@@ -11,14 +11,31 @@ async function getTtsService() {
   const { ENV } = await import("./_core/env");
   
   if (ENV.azureSpeechKey && ENV.azureSpeechKey.trim() !== "") {
-    console.log("[TTS] Using Azure TTS service");
-    return await import("./azureTtsService");
-  } else if (ENV.listenHubApiKey && ENV.listenHubApiKey.trim() !== "") {
-    console.log("[TTS] Using ListenHub TTS service");
-    return await import("./listenHubService");
-  } else {
-    throw new Error("No TTS service configured. Please set AZURE_SPEECH_KEY or LISTENHUB_API_KEY");
+    try {
+      console.log("[TTS] Attempting to use Azure TTS service...");
+      const azureService = await import("./azureTtsService");
+      console.log("[TTS] ✅ Azure TTS service loaded successfully");
+      return azureService;
+    } catch (error) {
+      console.error("[TTS] ❌ Failed to load Azure TTS service:", error instanceof Error ? error.message : String(error));
+      console.log("[TTS] Falling back to ListenHub...");
+      // 繼續嘗試 ListenHub
+    }
   }
+  
+  if (ENV.listenHubApiKey && ENV.listenHubApiKey.trim() !== "") {
+    try {
+      console.log("[TTS] Using ListenHub TTS service");
+      const listenHubService = await import("./listenHubService");
+      console.log("[TTS] ✅ ListenHub TTS service loaded successfully");
+      return listenHubService;
+    } catch (error) {
+      console.error("[TTS] ❌ Failed to load ListenHub TTS service:", error instanceof Error ? error.message : String(error));
+      throw new Error("Failed to load any TTS service");
+    }
+  }
+  
+  throw new Error("No TTS service configured. Please set AZURE_SPEECH_KEY or LISTENHUB_API_KEY");
 }
 import { AppError, ErrorCode, normalizeError, logError, getUserFriendlyMessage } from "./_core/errorHandler";
 
