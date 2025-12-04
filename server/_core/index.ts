@@ -153,15 +153,25 @@ async function startServer() {
   process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
   // Start server and return promise
+  // 注意：即使某些初始化失敗，也要確保伺服器能夠啟動並響應健康檢查
   return new Promise<void>((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      console.error(`[Server] ❌ Server startup timeout after 30 seconds`);
+      reject(new Error("Server startup timeout"));
+    }, 30000); // 30 秒超時
+
     server.listen(port, "0.0.0.0", () => {
+      clearTimeout(timeout);
       console.log(`[Server] ✅ Server running on http://0.0.0.0:${port}/`);
       console.log(`[Server] ✅ Health check available at http://0.0.0.0:${port}/health`);
+      console.log(`[Server] ✅ Server is ready to accept connections`);
       resolve();
     });
     
     server.on("error", (error) => {
+      clearTimeout(timeout);
       console.error(`[Server] ❌ Server failed to start:`, error);
+      console.error(`[Server] Error details:`, error.message);
       reject(error);
     });
   });
