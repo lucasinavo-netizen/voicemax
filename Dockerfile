@@ -33,10 +33,15 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # 建置前端和後端
-RUN pnpm run build && \
-    echo "Build completed. Checking dist directory..." && \
-    ls -la dist/ && \
-    ls -la dist/public/ 2>/dev/null || echo "dist/public not found" && \
+RUN echo "Starting build process..." && \
+    pnpm run build && \
+    echo "Build command completed. Verifying build output..." && \
+    echo "Checking dist directory:" && \
+    ls -la dist/ || echo "ERROR: dist directory does not exist!" && \
+    echo "Checking dist/public directory:" && \
+    ls -la dist/public/ || echo "ERROR: dist/public directory does not exist!" && \
+    echo "Checking dist/index.js:" && \
+    ls -la dist/index.js || echo "ERROR: dist/index.js does not exist!" && \
     echo "Build verification complete"
 
 # 暴露端口（Railway 會自動設定 PORT 環境變數）
