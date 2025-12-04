@@ -53,6 +53,18 @@ export function validateEnvironmentVariables(): ValidationResult {
     warnings.push("未配置 Google OAuth（GOOGLE_CLIENT_ID、GOOGLE_CLIENT_SECRET 或 GOOGLE_REDIRECT_URI）。Google 登入功能將無法使用。");
   }
 
+  // 檢查 TTS 服務配置（至少需要一個：Azure 或 ListenHub）
+  const hasAzureTts = ENV.azureSpeechKey && ENV.azureSpeechKey.trim() !== "";
+  const hasListenHub = ENV.listenHubApiKey && ENV.listenHubApiKey.trim() !== "";
+
+  if (!hasAzureTts && !hasListenHub) {
+    warnings.push("未配置 TTS 服務（AZURE_SPEECH_KEY 或 LISTENHUB_API_KEY）。Podcast 語音生成功能將無法使用。");
+  } else if (hasAzureTts) {
+    console.log("[Env] ✅ Azure TTS configured");
+  } else if (hasListenHub) {
+    console.log("[Env] ✅ ListenHub TTS configured");
+  }
+
   return {
     valid: missing.length === 0,
     missing,

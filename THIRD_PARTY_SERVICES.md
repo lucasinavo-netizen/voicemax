@@ -54,21 +54,35 @@
 
 這些服務提供重要功能，但可以找到替代方案：
 
-#### 5. **ListenHub (MarsWave)** - TTS 語音合成
+#### 5. **Azure Speech Services** - TTS 語音合成 ⭐ 推薦
 - **用途**：生成中文男女對話 Podcast 音檔
+- **API 端點**：Azure Speech Services REST API
+- **環境變數**：
+  - `AZURE_SPEECH_KEY` - Azure Speech API 金鑰（必需）
+  - `AZURE_SPEECH_REGION` - Azure 區域（可選，預設：eastus）
+- **使用位置**：
+  - `server/azureTtsService.ts`
+  - `server/routers.ts` (generateChinesePodcast)
+- **必要性**：⭐️⭐️⭐️⭐️ 重要功能
+- **免費額度**：每月前 5 小時免費
+- **價格**：$1/小時（超過免費額度後）
+- **優點**：
+  - 穩定的微軟服務
+  - 良好的中文支援
+  - 多種聲音選擇
+  - 免費額度充足
+
+#### 6. **ListenHub (MarsWave)** - TTS 語音合成（備用）
+- **用途**：生成中文男女對話 Podcast 音檔（備用方案）
 - **API 端點**：`https://api.marswave.ai/openapi/v1`
 - **環境變數**：`LISTENHUB_API_KEY`
 - **使用位置**：
   - `server/listenHubService.ts`
   - `server/routers.ts` (generateChinesePodcast)
 - **必要性**：⭐️⭐️⭐️⭐️ 重要功能，但可替代
-- **替代方案**：
-  - ElevenLabs API
-  - Azure Speech Services
-  - Google Cloud Text-to-Speech
-  - 其他 TTS 服務
+- **說明**：如果未配置 Azure TTS，系統會自動回退到 ListenHub
 
-#### 6. **Cloudflare R2** - 儲存服務 ⭐
+#### 7. **Cloudflare R2** - 儲存服務 ⭐
 - **用途**：儲存音檔、影片等檔案
 - **環境變數**：
   - `CLOUDFLARE_ACCOUNT_ID`
@@ -95,7 +109,7 @@ AssemblyAI (轉錄)
   ↓
 Google Gemini (分析 + 生成摘要/腳本)
   ↓
-ListenHub (生成 Podcast 音檔)
+Azure TTS / ListenHub (生成 Podcast 音檔)
   ↓
 Cloudflare R2 (儲存音檔)
   ↓
@@ -113,7 +127,8 @@ Cloudflare R2 (儲存音檔)
 - ✅ Google OAuth - 完全免費
 - ✅ Cloudflare R2 - 10GB 免費
 - ⚠️ AssemblyAI - 每月 5 小時免費轉錄
-- ⚠️ ListenHub - 需查看定價
+- ✅ Azure Speech Services - 每月 5 小時免費
+- ⚠️ ListenHub - 需查看定價（備用）
 
 ---
 
@@ -125,7 +140,8 @@ Cloudflare R2 (儲存音檔)
 3. Google OAuth - 用戶認證
 4. MySQL 資料庫 - 資料儲存
 5. Cloudflare R2 - 檔案儲存
-6. ListenHub - TTS 語音合成
+6. Azure Speech Services - TTS 語音合成（推薦）
+7. ListenHub - TTS 語音合成（備用）
 
 **已移除的服務：**
 - ✅ HeyGen API - 已移除

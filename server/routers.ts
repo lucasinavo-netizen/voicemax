@@ -6,7 +6,20 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createPodcastTask, updatePodcastTask, getUserPodcastTasks, getPodcastTask } from "./db";
 import { isValidYoutubeUrl, processYoutubeToPodcast } from "./youtubeService";
-import { generateChinesePodcast } from "./listenHubService";
+// TTS 服務：優先使用 Azure，回退到 ListenHub
+async function getTtsService() {
+  const { ENV } = await import("./_core/env");
+  
+  if (ENV.azureSpeechKey && ENV.azureSpeechKey.trim() !== "") {
+    console.log("[TTS] Using Azure TTS service");
+    return await import("./azureTtsService");
+  } else if (ENV.listenHubApiKey && ENV.listenHubApiKey.trim() !== "") {
+    console.log("[TTS] Using ListenHub TTS service");
+    return await import("./listenHubService");
+  } else {
+    throw new Error("No TTS service configured. Please set AZURE_SPEECH_KEY or LISTENHUB_API_KEY");
+  }
+}
 import { AppError, ErrorCode, normalizeError, logError, getUserFriendlyMessage } from "./_core/errorHandler";
 
 export const appRouter = router({
@@ -264,10 +277,10 @@ export const appRouter = router({
         };
       }),
 
-    // 獲取 ListenHub 聲音列表
+    // 獲取 TTS 聲音列表（Azure 或 ListenHub）
     getVoices: protectedProcedure.query(async () => {
-      const { getVoices } = await import("./listenHubService");
-      return getVoices();
+      const ttsService = await getTtsService();
+      return ttsService.getVoices();
     }),
     
     // 獲取使用者的聲音偏好設定
@@ -465,10 +478,10 @@ export const appRouter = router({
   // TODO: add feature routers here
   
   voice: router({
-    // 獲取 ListenHub 聲音列表
+    // 獲取 TTS 聲音列表（Azure 或 ListenHub）
     list: protectedProcedure.query(async () => {
-      const { getVoices } = await import("./listenHubService");
-      return getVoices();
+      const ttsService = await getTtsService();
+      return ttsService.getVoices();
     }),
     
     // 獲取使用者的聲音偏好設定
@@ -632,8 +645,9 @@ async function processPodcastTask(
       }
     }
 
-    // 生成 ListenHub Podcast
-    console.log(`[Task ${taskId}] Generating ListenHub podcast with mode: ${mode}...`);
+    // 生成 Podcast（使用 Azure TTS 或 ListenHub）
+    const ttsService = await getTtsService();
+    console.log(`[Task ${taskId}] Generating podcast with mode: ${mode}...`);
     await updateProgress({
       taskId,
       stage: 'generating',
@@ -644,7 +658,7 @@ async function processPodcastTask(
       ? { host1: finalVoiceId1, host2: finalVoiceId2 }
       : undefined;
     
-    const podcastEpisode = await generateChinesePodcast(result.summary, mode, customVoices);
+    const podcastEpisode = await ttsService.generateChinesePodcast(result.summary, mode, customVoices);
     
     console.log(`[Task ${taskId}] Podcast generated: ${podcastEpisode.audioUrl}`);
 

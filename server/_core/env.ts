@@ -16,4 +16,9 @@ export const ENV = {
   googleClientId: process.env.GOOGLE_CLIENT_ID ?? "",
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
   googleRedirectUri: process.env.GOOGLE_REDIRECT_URI ?? "",
+  // Azure Speech Services (TTS)
+  azureSpeechKey: process.env.AZURE_SPEECH_KEY ?? "",
+  azureSpeechRegion: process.env.AZURE_SPEECH_REGION ?? "eastus",
+  // ListenHub (legacy TTS, optional)
+  listenHubApiKey: process.env.LISTENHUB_API_KEY ?? "",
 };
