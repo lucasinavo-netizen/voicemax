@@ -22,15 +22,6 @@ async function startServer() {
       uptime: process.uptime()
     });
   });
-  
-  // Root path also responds for health checks
-  app.get("/", (_req, res) => {
-    res.status(200).json({ 
-      status: "ok", 
-      message: "VoiceMax API is running",
-      timestamp: new Date().toISOString()
-    });
-  });
 
   // 驗證環境變數（在啟動前檢查）
   // 注意：在 Railway 部署時，如果環境變數未設定，只顯示警告，不阻止啟動
