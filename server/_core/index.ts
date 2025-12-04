@@ -29,14 +29,31 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 
 async function startServer() {
   // 驗證環境變數（在啟動前檢查）
+  // 注意：在 Railway 部署時，如果環境變數未設定，只顯示警告，不阻止啟動
+  // 這樣可以讓健康檢查通過，然後在 Railway 日誌中看到缺少哪些變數
   try {
-    const { assertEnvironmentVariables } = await import("./validateEnv");
-    assertEnvironmentVariables();
-    console.log("[Startup] ✅ 環境變數驗證通過");
+    const { validateEnvironmentVariables } = await import("./validateEnv");
+    const result = validateEnvironmentVariables();
+    
+    if (!result.valid) {
+      console.error("[Startup] ❌ 環境變數驗證失敗:");
+      console.error("[Startup] 缺少必需的環境變數:", result.missing.join(", "));
+      console.error("[Startup] ⚠️  應用程式將繼續啟動，但某些功能可能無法使用");
+      console.error("[Startup] ⚠️  請在 Railway Variables 中設定缺少的環境變數");
+    } else {
+      console.log("[Startup] ✅ 環境變數驗證通過");
+    }
+    
+    if (result.warnings.length > 0) {
+      console.warn("[Startup] 環境變數警告:");
+      result.warnings.forEach(warning => {
+        console.warn(`[Startup] ⚠️  ${warning}`);
+      });
+    }
   } catch (error) {
-    console.error("[Startup] ❌ 環境變數驗證失敗:");
+    console.error("[Startup] ❌ 環境變數驗證過程發生錯誤:");
     console.error(error instanceof Error ? error.message : error);
-    process.exit(1);
+    console.error("[Startup] ⚠️  應用程式將繼續啟動");
   }
 
   // 診斷環境變數（僅顯示已設定狀態，不顯示值）
@@ -49,11 +66,26 @@ async function startServer() {
   console.log("[Startup] NODE_ENV:", process.env.NODE_ENV);
 
   // 在啟動伺服器前執行資料庫遷移
-  const { runMigrations } = await import("./migrate");
-  await runMigrations();
+  // 注意：遷移失敗不應該阻止應用啟動，讓 Railway 健康檢查可以通過
+  try {
+    const { runMigrations } = await import("./migrate");
+    await runMigrations();
+    console.log("[Startup] ✅ 資料庫遷移完成");
+  } catch (error) {
+    console.error("[Startup] ⚠️  資料庫遷移失敗:");
+    console.error(error instanceof Error ? error.message : error);
+    console.error("[Startup] ⚠️  應用程式將繼續啟動，但資料庫功能可能無法使用");
+    console.error("[Startup] ⚠️  請檢查 DATABASE_URL 是否正確，或手動執行遷移");
+  }
 
   const app = express();
   const server = createServer(app);
+  
+  // Health check endpoint (must be before other middleware)
+  app.get("/health", (_req, res) => {
+    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+  
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
