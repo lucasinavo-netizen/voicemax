@@ -33,7 +33,11 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # 建置前端和後端
-RUN pnpm run build
+RUN pnpm run build && \
+    echo "Build completed. Checking dist directory..." && \
+    ls -la dist/ && \
+    ls -la dist/public/ 2>/dev/null || echo "dist/public not found" && \
+    echo "Build verification complete"
 
 # 暴露端口（Railway 會自動設定 PORT 環境變數）
 EXPOSE 3000
