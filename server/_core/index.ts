@@ -3,7 +3,6 @@ import express from "express";
 import { createServer } from "http";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
-import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 
@@ -82,14 +81,22 @@ async function startServer() {
   // Google OAuth routes
   registerOAuthRoutes(app);
   
-  // tRPC API
-  app.use(
-    "/api/trpc",
-    createExpressMiddleware({
-      router: appRouter,
-      createContext,
-    })
-  );
+  // tRPC API (動態導入以避免啟動時載入所有路由)
+  try {
+    const { appRouter } = await import("../routers");
+    app.use(
+      "/api/trpc",
+      createExpressMiddleware({
+        router: appRouter,
+        createContext,
+      })
+    );
+    console.log("[Server] ✅ tRPC API routes loaded");
+  } catch (error) {
+    console.error("[Server] ❌ Failed to load tRPC routes:");
+    console.error(error instanceof Error ? error.message : error);
+    console.error("[Server] ⚠️  tRPC API will not be available");
+  }
   
   // Get port from environment (Railway sets this automatically)
   // Railway will provide PORT environment variable, use it directly
