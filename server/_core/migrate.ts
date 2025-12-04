@@ -16,6 +16,7 @@ export async function runMigrations() {
 
   try {
     console.log("[Migration] Starting database migration with drizzle-kit push...");
+    console.log("[Migration] Working directory:", process.cwd());
     
     // 使用 drizzle-kit push 來同步 schema
     const { stdout, stderr } = await execAsync("pnpm drizzle-kit push", {
@@ -33,7 +34,7 @@ export async function runMigrations() {
       console.warn("[Migration] Warnings:", stderr);
     }
 
-    console.log("[Migration] Migration completed successfully");
+    console.log("[Migration] ✅ Migration completed successfully");
   } catch (error: any) {
     // 如果 drizzle-kit 不在 PATH 中，嘗試使用 npx
     try {
