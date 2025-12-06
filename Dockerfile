@@ -41,7 +41,7 @@ RUN echo "Starting build process..." && \
     echo "Checking dist/public directory:" && \
     ls -la dist/public/ || echo "ERROR: dist/public directory does not exist!" && \
     echo "Checking dist/index.js:" && \
-    ls -la dist/index.js || echo "ERROR: dist/index.js does not exist!" && \
+    ls -la dist/index.js || (echo "ERROR: dist/index.js does not exist!" && exit 1) && \
     echo "Build verification complete"
 
 # 暴露端口（Railway 會自動設定 PORT 環境變數）
