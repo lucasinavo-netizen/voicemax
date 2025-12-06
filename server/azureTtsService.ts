@@ -94,6 +94,7 @@ export async function getVoices(): Promise<AzureTtsVoice[]> {
     throw new Error("Azure Speech API Key not configured");
   }
 
+  console.log(`[AzureTTS] Returning ${CHINESE_VOICES.length} Chinese voices`);
   // 返回預定義的中文聲音列表
   return CHINESE_VOICES;
 }
