@@ -3,7 +3,7 @@
  * 用於生成中文男女對話 Podcast
  */
 
-import { uploadFile } from "./storage";
+import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
 import path from "path";
 import fs from "fs/promises";
@@ -345,7 +345,7 @@ export async function generateChinesePodcast(
   console.log(`[AzureTTS] Uploading audio to storage: ${fileName}...`);
 
   try {
-    const audioUrl = await uploadFile(fileName, mergedAudio, "audio/wav");
+    const { url: audioUrl } = await storagePut(fileName, mergedAudio, "audio/wav");
     console.log(`[AzureTTS] ✅ Audio uploaded successfully: ${audioUrl}`);
 
     // 5. 返回結果
