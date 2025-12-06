@@ -76,7 +76,18 @@ export default function Home() {
     retry: 2,
     onError: (error) => {
       console.error("[Home] Failed to fetch voices:", error);
+      console.error("[Home] Error details:", {
+        message: error.message,
+        data: error.data,
+        shape: error.shape,
+      });
       toast.error(`無法載入聲音列表：${error.message}`);
+    },
+    onSuccess: (data) => {
+      console.log("[Home] Voices loaded successfully:", {
+        count: data?.length || 0,
+        voices: data?.map(v => ({ name: v.name, speakerId: v.speakerId })),
+      });
     },
   });
 
@@ -379,9 +390,33 @@ export default function Home() {
                   <div className="flex gap-2">
                     <Select value={host1Voice} onValueChange={setHost1Voice}>
                       <SelectTrigger className="h-11 flex-1">
-                        <SelectValue placeholder="選擇聲音" />
+                        <SelectValue placeholder={
+                          voicesQuery.isLoading 
+                            ? "載入中..." 
+                            : voicesQuery.isError 
+                            ? "載入失敗" 
+                            : voicesQuery.data?.length === 0
+                            ? "沒有可用聲音"
+                            : "選擇聲音"
+                        } />
                       </SelectTrigger>
                       <SelectContent>
+                        {voicesQuery.isLoading && (
+                          <SelectItem value="loading" disabled>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin inline" />
+                            載入中...
+                          </SelectItem>
+                        )}
+                        {voicesQuery.isError && (
+                          <SelectItem value="error" disabled>
+                            載入失敗：{voicesQuery.error?.message || "未知錯誤"}
+                          </SelectItem>
+                        )}
+                        {voicesQuery.data && voicesQuery.data.length === 0 && (
+                          <SelectItem value="empty" disabled>
+                            沒有可用聲音
+                          </SelectItem>
+                        )}
                         {voicesQuery.data?.map((voice) => (
                           <SelectItem key={voice.speakerId} value={voice.speakerId}>
                             {convertVoiceNameToTraditional(voice.name)}
@@ -412,9 +447,33 @@ export default function Home() {
                   <div className="flex gap-2">
                     <Select value={host2Voice} onValueChange={setHost2Voice}>
                       <SelectTrigger className="h-11 flex-1">
-                        <SelectValue placeholder="選擇聲音" />
+                        <SelectValue placeholder={
+                          voicesQuery.isLoading 
+                            ? "載入中..." 
+                            : voicesQuery.isError 
+                            ? "載入失敗" 
+                            : voicesQuery.data?.length === 0
+                            ? "沒有可用聲音"
+                            : "選擇聲音"
+                        } />
                       </SelectTrigger>
                       <SelectContent>
+                        {voicesQuery.isLoading && (
+                          <SelectItem value="loading" disabled>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin inline" />
+                            載入中...
+                          </SelectItem>
+                        )}
+                        {voicesQuery.isError && (
+                          <SelectItem value="error" disabled>
+                            載入失敗：{voicesQuery.error?.message || "未知錯誤"}
+                          </SelectItem>
+                        )}
+                        {voicesQuery.data && voicesQuery.data.length === 0 && (
+                          <SelectItem value="empty" disabled>
+                            沒有可用聲音
+                          </SelectItem>
+                        )}
                         {voicesQuery.data?.map((voice) => (
                           <SelectItem key={voice.speakerId} value={voice.speakerId}>
                             {convertVoiceNameToTraditional(voice.name)}
