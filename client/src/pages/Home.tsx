@@ -73,6 +73,11 @@ export default function Home() {
 
   const voicesQuery = trpc.podcast.getVoices.useQuery(undefined, {
     enabled: !!user,
+    retry: 2,
+    onError: (error) => {
+      console.error("[Home] Failed to fetch voices:", error);
+      toast.error(`無法載入聲音列表：${error.message}`);
+    },
   });
 
   const voicePreferenceQuery = trpc.podcast.getVoicePreference.useQuery(undefined, {

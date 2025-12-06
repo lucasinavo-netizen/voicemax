@@ -46,27 +46,29 @@ export interface AzureTtsVoice {
 }
 
 // 預定義的中文聲音列表
+// 注意：Azure TTS 不提供試聽音訊 URL，所以 demoAudioUrl 為空
+// 前端會處理這種情況，允許沒有試聽音訊的聲音
 const CHINESE_VOICES: AzureTtsVoice[] = [
   // 女聲
-  { name: "曉曉", speakerId: "zh-CN-XiaoxiaoNeural", gender: "female", language: "zh", locale: "zh-CN" },
-  { name: "曉辰", speakerId: "zh-CN-XiaochenNeural", gender: "female", language: "zh", locale: "zh-CN" },
-  { name: "曉涵", speakerId: "zh-CN-XiaohanNeural", gender: "female", language: "zh", locale: "zh-CN" },
-  { name: "曉曼", speakerId: "zh-CN-XiaomengNeural", gender: "female", language: "zh", locale: "zh-CN" },
-  { name: "曉墨", speakerId: "zh-CN-XiaomoNeural", gender: "female", language: "zh", locale: "zh-CN" },
-  { name: "曉秋", speakerId: "zh-CN-XiaoqiuNeural", gender: "female", language: "zh", locale: "zh-CN" },
-  { name: "曉睿", speakerId: "zh-CN-XiaoruiNeural", gender: "female", language: "zh", locale: "zh-CN" },
-  { name: "曉雙", speakerId: "zh-CN-XiaoshuangNeural", gender: "female", language: "zh", locale: "zh-CN" },
-  { name: "曉顏", speakerId: "zh-CN-XiaoyanNeural", gender: "female", language: "zh", locale: "zh-CN" },
-  { name: "曉悠", speakerId: "zh-CN-XiaoyouNeural", gender: "female", language: "zh", locale: "zh-CN" },
-  { name: "曉甄", speakerId: "zh-CN-XiaozhenNeural", gender: "female", language: "zh", locale: "zh-CN" },
+  { name: "曉曉", speakerId: "zh-CN-XiaoxiaoNeural", gender: "female", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "曉辰", speakerId: "zh-CN-XiaochenNeural", gender: "female", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "曉涵", speakerId: "zh-CN-XiaohanNeural", gender: "female", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "曉曼", speakerId: "zh-CN-XiaomengNeural", gender: "female", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "曉墨", speakerId: "zh-CN-XiaomoNeural", gender: "female", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "曉秋", speakerId: "zh-CN-XiaoqiuNeural", gender: "female", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "曉睿", speakerId: "zh-CN-XiaoruiNeural", gender: "female", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "曉雙", speakerId: "zh-CN-XiaoshuangNeural", gender: "female", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "曉顏", speakerId: "zh-CN-XiaoyanNeural", gender: "female", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "曉悠", speakerId: "zh-CN-XiaoyouNeural", gender: "female", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "曉甄", speakerId: "zh-CN-XiaozhenNeural", gender: "female", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
   // 男聲
-  { name: "雲健", speakerId: "zh-CN-YunyangNeural", gender: "male", language: "zh", locale: "zh-CN" },
-  { name: "雲飛", speakerId: "zh-CN-YunfengNeural", gender: "male", language: "zh", locale: "zh-CN" },
-  { name: "雲皓", speakerId: "zh-CN-YunhaoNeural", gender: "male", language: "zh", locale: "zh-CN" },
-  { name: "雲龍", speakerId: "zh-CN-YunlongNeural", gender: "male", language: "zh", locale: "zh-CN" },
-  { name: "雲澤", speakerId: "zh-CN-YunzeNeural", gender: "male", language: "zh", locale: "zh-CN" },
-  { name: "雲野", speakerId: "zh-CN-YunyeNeural", gender: "male", language: "zh", locale: "zh-CN" },
-  { name: "雲希", speakerId: "zh-CN-YunxiNeural", gender: "male", language: "zh", locale: "zh-CN" },
+  { name: "雲健", speakerId: "zh-CN-YunyangNeural", gender: "male", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "雲飛", speakerId: "zh-CN-YunfengNeural", gender: "male", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "雲皓", speakerId: "zh-CN-YunhaoNeural", gender: "male", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "雲龍", speakerId: "zh-CN-YunlongNeural", gender: "male", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "雲澤", speakerId: "zh-CN-YunzeNeural", gender: "male", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "雲野", speakerId: "zh-CN-YunyeNeural", gender: "male", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
+  { name: "雲希", speakerId: "zh-CN-YunxiNeural", gender: "male", language: "zh", locale: "zh-CN", demoAudioUrl: undefined },
 ];
 
 export interface PodcastEpisode {

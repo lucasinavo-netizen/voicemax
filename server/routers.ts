@@ -296,8 +296,18 @@ export const appRouter = router({
 
     // 獲取 TTS 聲音列表（Azure 或 ListenHub）
     getVoices: protectedProcedure.query(async () => {
-      const ttsService = await getTtsService();
-      return ttsService.getVoices();
+      try {
+        const ttsService = await getTtsService();
+        const voices = await ttsService.getVoices();
+        console.log(`[Podcast API] Returning ${voices.length} voices`);
+        return voices;
+      } catch (error) {
+        console.error("[Podcast API] Failed to get voices:", error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: `無法獲取聲音列表：${error instanceof Error ? error.message : '未知錯誤'}`,
+        });
+      }
     }),
     
     // 獲取使用者的聲音偏好設定
@@ -497,8 +507,18 @@ export const appRouter = router({
   voice: router({
     // 獲取 TTS 聲音列表（Azure 或 ListenHub）
     list: protectedProcedure.query(async () => {
-      const ttsService = await getTtsService();
-      return ttsService.getVoices();
+      try {
+        const ttsService = await getTtsService();
+        const voices = await ttsService.getVoices();
+        console.log(`[Voice API] Returning ${voices.length} voices`);
+        return voices;
+      } catch (error) {
+        console.error("[Voice API] Failed to get voices:", error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: `無法獲取聲音列表：${error instanceof Error ? error.message : '未知錯誤'}`,
+        });
+      }
     }),
     
     // 獲取使用者的聲音偏好設定

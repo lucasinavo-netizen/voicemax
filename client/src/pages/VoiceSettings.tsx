@@ -16,6 +16,11 @@ export default function VoiceSettings() {
   // 獲取聲音列表
   const voicesQuery = trpc.voice.list.useQuery(undefined, {
     enabled: isAuthenticated,
+    retry: 2,
+    onError: (error) => {
+      console.error("[VoiceSettings] Failed to fetch voices:", error);
+      toast.error(`無法載入聲音列表：${error.message}`);
+    },
   });
 
   // 獲取使用者的聲音偏好
