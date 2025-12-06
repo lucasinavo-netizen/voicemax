@@ -7,10 +7,14 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 
 async function startServer() {
+  console.log("[Startup] 🚀 Starting server...");
+  
   // 先創建 Express 應用和伺服器，立即設置健康檢查端點
   // 這樣健康檢查可以在其他初始化完成前就可用
   const app = express();
   const server = createServer(app);
+  
+  console.log("[Startup] ✅ Express app and HTTP server created");
   
   // Health check endpoint (must be FIRST, before any other middleware)
   // This ensures health checks work even if other parts fail
@@ -21,6 +25,8 @@ async function startServer() {
       uptime: process.uptime()
     });
   });
+  
+  console.log("[Startup] ✅ Health check endpoint registered at /health");
 
   // 驗證環境變數（在啟動前檢查）
   // 注意：在 Railway 部署時，如果環境變數未設定，只顯示警告，不阻止啟動
@@ -108,6 +114,7 @@ async function startServer() {
   
   console.log(`[Server] Port configured: ${port}`);
   console.log(`[Server] NODE_ENV: ${process.env.NODE_ENV}`);
+  console.log(`[Server] Starting to listen on port ${port}...`);
 
   // development mode uses Vite, production mode uses static files
   // Wrap in try-catch to ensure server can start even if static files fail
@@ -177,11 +184,31 @@ async function startServer() {
   });
 }
 
+// 全局錯誤處理：捕獲未處理的異常和 Promise rejection
+process.on("uncaughtException", (error) => {
+  console.error("[Startup] ❌ Uncaught Exception:", error);
+  console.error("[Startup] Stack:", error.stack);
+  // 不要立即退出，讓伺服器有機會啟動
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("[Startup] ❌ Unhandled Rejection at:", promise);
+  console.error("[Startup] Reason:", reason);
+  // 不要立即退出，讓伺服器有機會啟動
+});
+
+// 啟動伺服器
 startServer()
   .then(() => {
     console.log("[Startup] ✅ Server startup completed successfully");
   })
   .catch((error) => {
     console.error("[Startup] ❌ Server startup failed:", error);
-    process.exit(1);
+    console.error("[Startup] Error stack:", error instanceof Error ? error.stack : "No stack trace");
+    // 即使啟動失敗，也等待一段時間讓健康檢查有機會通過
+    // 因為某些錯誤可能不影響健康檢查端點
+    setTimeout(() => {
+      console.error("[Startup] Exiting after startup failure...");
+      process.exit(1);
+    }, 10000); // 10 秒後退出
   });
